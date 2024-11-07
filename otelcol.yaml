@@ -1,0 +1,24 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: nodejs-metrics-demo-collector:4318
+
+processors:
+  attributes/betterstack:
+    actions:
+      - key: better_stack_source_token
+        value: <source_token>
+        action: insert
+  batch:
+
+exporters:
+  prometheusremotewrite/betterstack:
+    endpoint: https://in-otel.logs.betterstack.com/metrics
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch, attributes/betterstack]
+      exporters: [prometheusremotewrite/betterstack]
